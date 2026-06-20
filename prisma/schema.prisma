@@ -1,0 +1,26 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Project {
+  id            String   @id @default(cuid())
+  name          String
+  categoryEn    String
+  categoryId    String
+  descriptionEn String
+  descriptionId String
+  image         String?
+  gradient      String   @default("from-indigo-500 to-purple-600")
+  technologies  String[]
+  status        String   @default("Active")
+  demoUrl       String?
+  order         Int      @default(0)
+  published     Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
