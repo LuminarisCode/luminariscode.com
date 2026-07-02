@@ -1,7 +1,7 @@
 "use client";
 import { motion } from "framer-motion";
 import { useState } from "react";
-import { MessageCircle, Mail, ExternalLink, Camera, ArrowRight, CheckCircle, Loader2, AlertCircle } from "lucide-react";
+import { MessageCircle, Mail, ArrowRight, CheckCircle, Loader2, AlertCircle, ShieldCheck } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { translations } from "@/lib/i18n/translations";
@@ -30,22 +30,6 @@ export default function ContactSection() {
       href: "mailto:luminariscode@gmail.com",
       color: "text-indigo-500",
       bg: "bg-indigo-50",
-    },
-    {
-      icon: ExternalLink,
-      labelKey: "linkedin" as const,
-      value: "Luminaris Code",
-      href: "https://linkedin.com",
-      color: "text-blue-500",
-      bg: "bg-blue-50",
-    },
-    {
-      icon: Camera,
-      labelKey: "instagram" as const,
-      value: "@luminariscode",
-      href: "https://instagram.com",
-      color: "text-pink-500",
-      bg: "bg-pink-50",
     },
   ];
 
@@ -253,6 +237,11 @@ export default function ContactSection() {
                     t.form.submit
                   )}
                 </button>
+
+                <p className="flex items-center justify-center gap-1.5 text-xs text-gray-400 text-center">
+                  <ShieldCheck className="w-3.5 h-3.5 flex-shrink-0" />
+                  {t.trustNote}
+                </p>
               </form>
             )}
           </motion.div>

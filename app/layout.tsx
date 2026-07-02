@@ -9,22 +9,44 @@ const inter = Inter({
   display: "swap",
 });
 
+const siteUrl = "https://luminariscode.com";
+const title = "Luminaris Code — Software That Solves Real Business Problems";
+const description =
+  "Luminaris Code helps manufacturing, healthcare, education, logistics, and retail businesses solve operational problems through custom web platforms, ERP systems, mobile apps, and AI automation.";
+
 export const metadata: Metadata = {
-  title: "Luminaris Code — Transforming Ideas Into Powerful Digital Solutions",
-  description:
-    "Luminaris Code is a premium software house specializing in custom web development, ERP systems, mobile apps, and AI solutions.",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: title,
+    template: "%s | Luminaris Code",
+  },
+  description,
   keywords: [
-    "software house",
-    "web development",
-    "ERP",
-    "mobile app",
+    "software consulting",
+    "custom software development",
+    "ERP systems",
+    "business automation",
+    "mobile app development",
     "AI automation",
     "digital transformation",
+    "enterprise software Indonesia",
   ],
+  authors: [{ name: "Luminaris Code" }],
+  alternates: {
+    canonical: "/",
+  },
   openGraph: {
-    title: "Luminaris Code",
-    description: "Transforming Ideas Into Powerful Digital Solutions",
+    title,
+    description,
+    url: siteUrl,
+    siteName: "Luminaris Code",
+    locale: "en_US",
     type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title,
+    description,
   },
 };
 

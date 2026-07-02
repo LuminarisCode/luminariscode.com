@@ -11,7 +11,7 @@ export default function WhyChooseSection() {
   const t = translations[lang].why;
 
   return (
-    <section className="py-28 bg-gray-50">
+    <section id="why" className="py-28 bg-gray-50">
       <div className="max-w-7xl mx-auto px-6">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

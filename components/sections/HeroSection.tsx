@@ -90,6 +90,21 @@ export default function HeroSection() {
             </a>
           </motion.div>
 
+          {/* Trust Indicators */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.55, duration: 0.6 }}
+            className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 mb-10 text-xs font-medium text-gray-500 uppercase tracking-wide"
+          >
+            {t.trustBadges.map((badge, i) => (
+              <span key={badge} className="flex items-center gap-2">
+                {i !== 0 && <span className="w-1 h-1 rounded-full bg-gray-700" />}
+                {badge}
+              </span>
+            ))}
+          </motion.div>
+
           {/* Stats */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}

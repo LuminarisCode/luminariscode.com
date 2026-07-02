@@ -1,11 +1,53 @@
 "use client";
 import { useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { ArrowUpRight, ExternalLink, ChevronDown } from "lucide-react";
 import Image from "next/image";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { translations } from "@/lib/i18n/translations";
 import { cn } from "@/lib/utils";
+
+// Deeper case-study breakdown for the two flagship projects backed by a
+// verified client quote elsewhere on the site (see Testimonials) — not
+// added for other projects since there's no verified impact to cite.
+const caseStudies: Record<string, { en: { challenge: string; solution: string; impact: string }; id: { challenge: string; solution: string; impact: string } }> = {
+  Edupiere: {
+    en: {
+      challenge:
+        "Before Edupiere, the school's admissions, academics, and exam records were split across spreadsheets and paper forms — data was hard to trust and staff spent more time reconciling records than supporting students.",
+      solution:
+        "We built a centralized, multi-tenant School ERP covering PPDB admissions, academics, and CBT examinations — giving every role, from admin to teacher, one system instead of many.",
+      impact:
+        "As the school's principal, Ahmad Faruq, put it: \"Edupiere completely transformed how we manage our school. The system is intuitive and the team was incredibly responsive.\"",
+    },
+    id: {
+      challenge:
+        "Sebelum Edupiere, data PPDB, akademik, dan ujian sekolah tersebar di spreadsheet dan formulir kertas — data sulit dipercaya dan staf lebih banyak menghabiskan waktu merekonsiliasi data daripada mendampingi siswa.",
+      solution:
+        "Kami membangun ERP Sekolah multi-tenant yang terpusat mencakup PPDB, akademik, dan ujian CBT — memberi setiap peran, dari admin hingga guru, satu sistem yang sama.",
+      impact:
+        "Menurut kepala sekolah, Ahmad Faruq: \"Edupiere benar-benar mengubah cara kami mengelola sekolah. Sistemnya intuitif dan timnya sangat responsif.\"",
+    },
+  },
+  "Clinic Queue System": {
+    en: {
+      challenge:
+        "Long, unpredictable waiting times and manual registration were straining front-desk staff and frustrating patients at the clinic.",
+      solution:
+        "We built a real-time queue management system with role-based queues for doctors and midwives, plus automated daily queue generation.",
+      impact:
+        "As the clinic's Operations Manager, Sari Dewi, put it: \"The clinic queue system reduced our patient wait time by 60%. The real-time tracking feature is a game changer.\"",
+    },
+    id: {
+      challenge:
+        "Waktu tunggu yang panjang dan tidak menentu serta registrasi manual membebani staf front-desk dan membuat pasien frustrasi di klinik.",
+      solution:
+        "Kami membangun sistem manajemen antrian real-time dengan antrian berbasis peran untuk dokter dan bidan, serta pembuatan antrian harian otomatis.",
+      impact:
+        "Menurut Operations Manager klinik, Sari Dewi: \"Sistem antrian klinik ini mengurangi waktu tunggu pasien kami hingga 60%. Fitur pelacakan real-time-nya benar-benar mengubah permainan.\"",
+    },
+  },
+};
 
 type DBProject = {
   id: string;
@@ -25,10 +67,16 @@ type DBProject = {
 
 const INITIAL_VISIBLE = 6;
 
+function toggleLabel(isExpanded: boolean, lang: "en" | "id") {
+  if (isExpanded) return lang === "id" ? "Sembunyikan studi kasus" : "Hide case study";
+  return lang === "id" ? "Baca studi kasus lengkap" : "Read full case study";
+}
+
 export default function PortfolioSection({ projects }: { projects: DBProject[] }) {
   const { lang } = useLanguage();
   const t = translations[lang].portfolio;
   const [showAll, setShowAll] = useState(false);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   const visibleItems = showAll ? projects : projects.slice(0, INITIAL_VISIBLE);
 
@@ -56,6 +104,8 @@ export default function PortfolioSection({ projects }: { projects: DBProject[] }
             const isFeatured = index === 0;
             const category = lang === "id" ? item.categoryId : item.categoryEn;
             const description = lang === "id" ? item.descriptionId : item.descriptionEn;
+            const caseStudy = caseStudies[item.name]?.[lang];
+            const isExpanded = expandedId === item.id;
 
             return (
               <motion.div
@@ -151,9 +201,54 @@ export default function PortfolioSection({ projects }: { projects: DBProject[] }
                     </span>
                   </div>
 
-                  <p className="text-[13px] text-gray-500 leading-relaxed mb-4 line-clamp-2 flex-1">
+                  <p
+                    className={cn(
+                      "text-[13px] text-gray-500 leading-relaxed mb-2 flex-1",
+                      !isExpanded && "line-clamp-2"
+                    )}
+                  >
                     {description}
                   </p>
+
+                  {caseStudy && (
+                    <>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setExpandedId(isExpanded ? null : item.id);
+                        }}
+                        className="self-start text-[12px] font-semibold text-indigo-600 hover:text-indigo-700 mb-3 transition-colors"
+                      >
+                        {toggleLabel(isExpanded, lang)}
+                      </button>
+                      <AnimatePresence>
+                        {isExpanded && (
+                          <motion.div
+                            initial={{ height: 0, opacity: 0 }}
+                            animate={{ height: "auto", opacity: 1 }}
+                            exit={{ height: 0, opacity: 0 }}
+                            transition={{ duration: 0.3, ease: "easeInOut" }}
+                            className="overflow-hidden"
+                          >
+                            <div className="space-y-3 mb-4 pt-1">
+                              {[
+                                { label: lang === "id" ? "Tantangan" : "Challenge", text: caseStudy.challenge },
+                                { label: lang === "id" ? "Solusi" : "Solution", text: caseStudy.solution },
+                                { label: lang === "id" ? "Dampak" : "Impact", text: caseStudy.impact },
+                              ].map(({ label, text }) => (
+                                <div key={label}>
+                                  <div className="text-[10px] font-semibold text-indigo-400 uppercase tracking-wider mb-1">
+                                    {label}
+                                  </div>
+                                  <p className="text-[13px] text-gray-500 leading-relaxed">{text}</p>
+                                </div>
+                              ))}
+                            </div>
+                          </motion.div>
+                        )}
+                      </AnimatePresence>
+                    </>
+                  )}
 
                   {/* Tech tags */}
                   <div className="flex flex-wrap gap-1.5 mt-auto">

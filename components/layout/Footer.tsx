@@ -1,5 +1,5 @@
 "use client";
-import { Zap, MessageCircle, Mail, ExternalLink, Camera } from "lucide-react";
+import { Zap, MessageCircle, Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useLanguage } from "@/lib/i18n/LanguageContext";
 import { translations } from "@/lib/i18n/translations";
@@ -7,18 +7,18 @@ import { translations } from "@/lib/i18n/translations";
 const socialLinks = [
   { icon: MessageCircle, href: "https://wa.me/6282129629737", label: "WhatsApp", color: "hover:text-green-500" },
   { icon: Mail, href: "mailto:luminariscode@gmail.com", label: "Email", color: "hover:text-indigo-500" },
-  { icon: ExternalLink, href: "https://linkedin.com", label: "LinkedIn", color: "hover:text-blue-500" },
-  { icon: Camera, href: "https://instagram.com", label: "Instagram", color: "hover:text-pink-500" },
 ];
+
+const groupKeys = ["services", "products", "company"] as const;
 
 export default function Footer() {
   const { lang } = useLanguage();
   const t = translations[lang].footer;
 
-  const footerLinks = {
-    [t.groups.services]: t.links.services,
-    [t.groups.products]: t.links.products,
-    [t.groups.company]: t.links.company,
+  const footerHrefs: Record<(typeof groupKeys)[number], string[]> = {
+    services: t.links.services.map(() => "#services"),
+    products: t.links.products.map(() => "#products"),
+    company: ["#why", "#portfolio", "#contact"],
   };
 
   return (
@@ -51,13 +51,16 @@ export default function Footer() {
           </div>
 
           {/* Links */}
-          {Object.entries(footerLinks).map(([group, links]) => (
-            <div key={group}>
-              <h4 className="text-white font-semibold text-sm mb-4">{group}</h4>
+          {groupKeys.map((key) => (
+            <div key={key}>
+              <h4 className="text-white font-semibold text-sm mb-4">{t.groups[key]}</h4>
               <ul className="space-y-2.5">
-                {links.map((link) => (
+                {t.links[key].map((link, i) => (
                   <li key={link}>
-                    <a href="#" className="text-sm text-gray-500 hover:text-gray-300 transition-colors">
+                    <a
+                      href={footerHrefs[key][i]}
+                      className="text-sm text-gray-500 hover:text-gray-300 transition-colors"
+                    >
                       {link}
                     </a>
                   </li>
@@ -68,7 +71,9 @@ export default function Footer() {
         </div>
 
         <div className="border-t border-gray-800 pt-8 flex flex-col sm:flex-row justify-between items-center gap-4">
-          <p className="text-sm text-gray-600">{t.copyright}</p>
+          <p className="text-sm text-gray-600">
+            © {new Date().getFullYear()} {t.copyright}
+          </p>
           <p className="text-sm text-gray-600">{t.built}</p>
         </div>
       </div>
